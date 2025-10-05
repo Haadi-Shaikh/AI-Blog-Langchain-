@@ -6,17 +6,15 @@ import os
 import streamlit as st
 import time
 from dotenv import load_dotenv
-# from secret_api_keys import hugging_face_api_key
+
 load_dotenv()
-# Set Hugging Face API key from environment variable or secret file
+
 hugging_face_api_key = os.getenv("HF_TOKEN", hugging_face_api_key)
 
-# os.environ['HUGGINGFACEHUB_API_TOKEN'] = hugging_face_api_key
 if not hugging_face_api_key:
-    raise ValueError("❌ Missing HF_TOKEN. Please set it in your .env or repo secrets.")
+    raise ValueError(" Missing HF_TOKEN. Please set it in your .env or repo secrets.")
 
 
-# Available models
 MODEL_OPTIONS = [
     "HuggingFaceH4/zephyr-7b-beta",
     "mistralai/Mistral-7B-Instruct-v0.2",
@@ -31,7 +29,6 @@ def initialize_langchain_model(model_id):
     Uses ChatHuggingFace for better chat-based interactions.
     """
     try:
-        # First create the HuggingFaceEndpoint
         llm = HuggingFaceEndpoint(
             repo_id=model_id,
             task="text-generation",
@@ -43,7 +40,6 @@ def initialize_langchain_model(model_id):
             huggingfacehub_api_token=hugging_face_api_key,
         )
         
-        # Wrap it with ChatHuggingFace for chat capabilities
         chat_model = ChatHuggingFace(llm=llm)
         
         return chat_model, "success"
@@ -58,8 +54,6 @@ def safe_invoke_chain(chain, inputs, max_retries=3):
     for attempt in range(max_retries):
         try:
             response = chain.invoke(inputs)
-            
-            # Handle different response types from LangChain
             if hasattr(response, 'content'):
                 return response.content.strip()
             elif isinstance(response, dict) and 'text' in response:
@@ -117,8 +111,7 @@ def safe_invoke_chain(chain, inputs, max_retries=3):
 
 def create_title_generation_chain(chat_model):
     """Create a LangChain chain for title generation."""
-    
-    # Using ChatPromptTemplate for better structured prompts
+
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are a creative blog title generator. Generate exactly 10 numbered blog titles, one per line. Be concise and creative."),
         ("human", "Generate 10 creative blog post titles about: {topic}\n\nTarget audience: beginners and tech enthusiasts.\nFormat: numbered list 1-10, no explanations, just titles.")
@@ -170,7 +163,6 @@ st.set_page_config(page_title="AI Blog Generator", page_icon="✍️", layout="w
 st.title("✍️ AI Blog Content Assistant....")
 st.header("Create High-Quality Blog Content Without Breaking the Bank")
 
-# Initialize session state for model
 if 'current_model' not in st.session_state:
     st.session_state['current_model'] = None
     st.session_state['current_model_name'] = MODEL_OPTIONS[0]
@@ -211,23 +203,6 @@ with st.sidebar:
     else:
         st.info("ℹ️ Please load a model to start")
     
-    # st.divider()
-    # st.header("📋 How to Use")
-    # st.write("""
-    # 1. **Load Model**: Select and load a model first
-    # 2. **Generate Titles**: Enter a topic
-    # 3. **Add Keywords**: Add relevant keywords
-    # 4. **Generate Blog**: Create your post
-    # """)
-    
-    # st.header("💡 Best Practices")
-    # st.write("""
-    # - Use Zephyr or Mistral models for best results
-    # - Start with 300-500 words
-    # - Add 3-5 relevant keywords
-    # - Be specific with your topic
-    # """)
-    
     st.header("🔧 Troubleshooting")
     st.write("""
     - If model fails, try a different one
@@ -244,12 +219,10 @@ with st.sidebar:
         st.success("Cache cleared!")
         st.rerun()
 
-# Check if model is loaded
 if st.session_state['model_status'] != "loaded":
     st.warning("⚠️ Please load a model from the sidebar to begin.")
     st.stop()
 
-# Main content - Two columns layout
 col1, col2 = st.columns([1, 1])
 
 # Title Generation Section
