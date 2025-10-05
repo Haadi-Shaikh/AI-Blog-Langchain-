@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-hugging_face_api_key = os.getenv("HF_TOKEN", hugging_face_api_key)
+hugging_face_api_key = os.getenv("HF_TOKEN")
 
 if not hugging_face_api_key:
     raise ValueError(" Missing HF_TOKEN. Please set it in your .env or repo secrets.")
@@ -391,4 +391,5 @@ if 'blog_results' in st.session_state:
 # Footer
 st.divider()
 st.caption("🦜🔗 Powered by LangChain + Hugging Face | Built with Streamlit")
+
 
