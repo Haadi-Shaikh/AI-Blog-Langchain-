@@ -1,7 +1,6 @@
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 from langchain.prompts import ChatPromptTemplate, PromptTemplate
 from langchain.schema import HumanMessage, SystemMessage
-from secret_api_keys import hugging_face_api_key
 import os
 import streamlit as st
 import time
@@ -392,3 +391,4 @@ if 'blog_results' in st.session_state:
 # Footer
 st.divider()
 st.caption("🦜🔗 Powered by LangChain + Hugging Face | Built with Streamlit")
+
